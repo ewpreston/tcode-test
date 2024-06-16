@@ -1,18 +1,24 @@
 import React, { ChangeEvent, FC, useState } from 'react';
 import './App.css';
-import { Membership } from './Type';
-import { fetchMembers } from './Api';
+import { Membership, User } from './Type';
+import { fetchMembers, fetchUsers } from './Api';
 import { Button, Input, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import turnitinLogo from './turnitin-logo.png';
 
 const App: FC<any> = () => {
   const [memberships, setMemberships] = useState<Array<Membership>>([]);
+  const [users, setUsers] = useState<Array<User>>([]);
   const [search, setSearch] = useState<string>();
   const [activeMembership, setActiveMembership] = useState<Membership>();
 
   const loadMemberships = () => {
     return fetchMembers()
       .then(membershipList => setMemberships(membershipList.memberships))
+  }
+
+  const loadUsers = () => {
+    return fetchUsers()
+        .then(userList => setUsers(userList.users))
   }
 
   const updateSearch = (event: ChangeEvent<HTMLInputElement>) => {
@@ -78,6 +84,33 @@ const App: FC<any> = () => {
               </ModalBody>
             </Modal>
           )
+        }
+        <div className='user-inputs'>
+          <Button color='primary' className='fetch-btn' onClick={loadUsers}>Fetch Users</Button>
+        </div>
+        {
+            users && users.length > 0 && (
+                <table>
+                  <thead>
+                  <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  { users.map(user => (
+                          <tr key={user.id}>
+                            <td>{user.id}</td>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
+                          </tr>
+                      ))
+                  }
+                  </tbody>
+                </table>
+            )
         }
       </header>
     </div>

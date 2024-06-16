@@ -1,7 +1,7 @@
 export type User = {
-    id: String;
-    name: String;
-    email: String;
+    id: string;
+    name: string;
+    email: string;
 }
 
 export type Membership = {
@@ -10,6 +10,11 @@ export type Membership = {
     role: string;
     user: User;
 }
+
 export type MembershipList = {
     memberships: Membership[];
+}
+
+export type UserList = {
+    users: User[];
 }
