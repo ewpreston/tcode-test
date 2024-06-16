@@ -7,6 +7,7 @@ import integrations.turnitin.com.membersearcher.controller.ApiController;
 import integrations.turnitin.com.membersearcher.model.Membership;
 import integrations.turnitin.com.membersearcher.model.MembershipList;
 import integrations.turnitin.com.membersearcher.model.User;
+import integrations.turnitin.com.membersearcher.model.UserList;
 import integrations.turnitin.com.membersearcher.service.MembershipService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -66,5 +67,29 @@ public class ApiControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("$.memberships").isNotEmpty())
 				.andExpect(jsonPath("$.memberships[0].user.name").value("test one"));
+	}
+
+	@Test
+	public void TestUsersEndpointReturnsUsers() throws Exception {
+		User userOne = new User()
+				.setId("1")
+				.setName("test one")
+				.setEmail("test1@example.com");
+		User userTwo = new User()
+				.setId("2")
+				.setName("test two")
+				.setEmail("test2@example.com");
+		UserList users = new UserList()
+				.setUsers(List.of(userOne, userTwo));
+		when(membershipService.fetchAllUsers()).thenReturn(CompletableFuture.completedFuture(users));
+		final MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/api/course/users");
+
+		final MvcResult result = mvc.perform(request).andReturn();
+		mvc.perform(asyncDispatch(result))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.users").isNotEmpty())
+				.andExpect(jsonPath("$.users[0].name").value("test one"))
+				.andExpect(jsonPath("$.users[1].name").value("test two"))
+				.andExpect(jsonPath("$.users[2].name").doesNotExist());
 	}
 }

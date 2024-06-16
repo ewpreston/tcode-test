@@ -35,6 +35,8 @@ public class MembershipServiceTest {
 
 	private User userTwo;
 
+	private User userThree;
+
 	private UserList users;
 
 	@BeforeEach
@@ -58,17 +60,30 @@ public class MembershipServiceTest {
 				.setId("2")
 				.setName("test two")
 				.setEmail("test2@example.com");
+		userThree = new User()
+				.setId("3")
+				.setName("test three")
+				.setEmail("test3@example.com");
 		users = new UserList()
-				.setUsers(List.of(userOne, userTwo));
+				.setUsers(List.of(userOne, userTwo, userThree));
 
-		when(membershipBackendClient.fetchMemberships()).thenReturn(CompletableFuture.completedFuture(members));
 		when(membershipBackendClient.fetchUsers()).thenReturn(CompletableFuture.completedFuture(users));
 	}
 
 	@Test
 	public void TestFetchAllMemberships() throws Exception {
+		when(membershipBackendClient.fetchMemberships()).thenReturn(CompletableFuture.completedFuture(members));
 		MembershipList members = membershipService.fetchAllMembershipsWithUsers().get();
 		assertThat(members.getMemberships().get(0).getUser()).isEqualTo(userOne);
 		assertThat(members.getMemberships().get(1).getUser()).isEqualTo(userTwo);
+		assertThat(members.getMemberships().size()).isEqualTo(2);
+	}
+
+	@Test
+	public void TestFetchAllUsers() throws Exception {
+		UserList users = membershipService.fetchAllUsers().get();
+		assertThat(users.getUsers().get(0)).isEqualTo(userOne);
+		assertThat(users.getUsers().get(1)).isEqualTo(userTwo);
+		assertThat(users.getUsers().size()).isEqualTo(3);
 	}
 }

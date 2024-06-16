@@ -6,6 +6,7 @@ import integrations.turnitin.com.membersearcher.client.MembershipBackendClient;
 import integrations.turnitin.com.membersearcher.model.MembershipList;
 
 import integrations.turnitin.com.membersearcher.model.User;
+import integrations.turnitin.com.membersearcher.model.UserList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +38,15 @@ public class MembershipService {
                         return CompletableFuture.allOf(userCalls)
                                 .thenApply(nil -> members);
 				}));
+	}
+
+	/**
+	 * Method to fetch all users.
+	 * This method calls out to the php-backend service and fetches all users.
+	 *
+	 * @return A CompletableFuture containing a fully populated UserList object.
+	 */
+	public CompletableFuture<UserList> fetchAllUsers() {
+		return membershipBackendClient.fetchUsers();
 	}
 }

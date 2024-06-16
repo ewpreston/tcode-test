@@ -3,6 +3,7 @@ package integrations.turnitin.com.membersearcher.controller;
 import java.util.concurrent.CompletableFuture;
 
 import integrations.turnitin.com.membersearcher.model.MembershipList;
+import integrations.turnitin.com.membersearcher.model.UserList;
 import integrations.turnitin.com.membersearcher.service.MembershipService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +23,10 @@ public class ApiController {
 	@GetMapping("/course/members")
 	public CompletableFuture<MembershipList> fetchAllMemberships() {
 		return membershipService.fetchAllMembershipsWithUsers();
+	}
+
+	@GetMapping("/course/users")
+	public CompletableFuture<UserList> fetchAllUserss() {
+		return membershipService.fetchAllUsers();
 	}
 }
